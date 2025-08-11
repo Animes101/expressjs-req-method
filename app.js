@@ -28,22 +28,34 @@ app.get('/register', (req,res)=>{
 
 })
 
-app.post('/register', (req,res)=>{
+const myMidilWere=(req,res,next)=>{
 
-    const {username,password}=req.body;
+
+      const { username, password } = req.body;
 
     const pattern = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{4}$/;
-     
 
-    if(pattern.test(password)){
-      
-
-        res.send(`Username: ${username}, Password: ${password}`);
-
-    }else{
-
-        res.send('password must be letter number and 4 character')
+    if (!pattern.test(password)) {
+        // Password invalid হলে response পাঠাও এবং next() কল করো না
+        return res.status(400).send('Password must be letter, number and exactly 4 characters');
     }
+    
+    // যদি password ঠিক থাকে, তাহলে next() কল করো
+     next();
+
+
+}
+
+app.post('/register',myMidilWere, (req,res)=>{
+
+
+    const { username, password } = req.body;
+
+    // সাধারণত এখানে ইউজার ডাটাবেজে সেভ করার কোড থাকবে
+
+    res.status(201).send(`User created: Username - ${username}, Password - ${password}`);
+
+    
 
 })
 
